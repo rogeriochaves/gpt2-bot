@@ -10,11 +10,12 @@ import tensorflow as tf
 import model
 import sample
 import encoder
+import time
 
 model_name = '117M'
 seed = None
-length = 200
-temperature = 10
+length = 80
+temperature = 5
 top_k = 5
 
 
@@ -44,12 +45,12 @@ def load_model():
     ckpt = tf.train.latest_checkpoint(
         os.path.join('models', model_name))
     saver.restore(sess, ckpt)
-    print("done")
 
     return sess, enc, context, output
 
 
 def bot_reply(model, conversation):
+    start = time.time()
     sess, enc, context, output = model
 
     encoded_conversation = enc.encode(conversation)
@@ -60,7 +61,9 @@ def bot_reply(model, conversation):
 
     splits = text.split('\n')
     reply = splits[0]
+    end = time.time()
 
+    print("(replied in " + str(end - start) + "s)")
     return reply
 
 
